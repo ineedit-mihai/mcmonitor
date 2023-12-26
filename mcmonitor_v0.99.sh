@@ -538,7 +538,8 @@ while [[ ${remote_IP[$COUNTER]} != "" ]]; do
    debug "Remote connection $COUNTER is ${remote_IP[$COUNTER]}:${remote_port[$COUNTER]}." 
    IN_SCHEDULE=`check_schedule ${schedule[$COUNTER]}`
    if [[ $IN_SCHEDULE != "FALSE" ]]; then   
-      response=$(printf '%bquit\n' '\035' | telnet ${remote_IP[$COUNTER]} ${remote_port[$COUNTER]} 2>&1 > /dev/null | wc -l)
+      ## response=$(printf '%bquit\n' '\035' | telnet ${remote_IP[$COUNTER]} ${remote_port[$COUNTER]} 2>&1 > /dev/null | wc -l)
+      response=$(curl --connect-timeout 2 --max-time 3 ${remote_IP[$COUNTER]}:${remote_port[$COUNTER]} 2>&1 | grep 'Connection refused' | wc -l)
       debug "Response is $response"
       if (( $response > 0 )) 
          then 
